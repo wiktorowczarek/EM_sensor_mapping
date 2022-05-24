@@ -4,9 +4,48 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sensor_app"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Sensor Mapping" Height="800" Width="1400" ResizeMode="NoResize">
     <Grid>
+        <TabControl>
+            <TabItem Header="Kamera">
+                <Grid>
+                    
+                    <Button Content="START" Click="captureButton_Click" Margin="10,10,1333,701"/>
+                    <Button Content="Reconnect" Click="captureButton_Click" Margin="10,56,1333,655"/>
+                    <WindowsFormsHost Height="720" Width="1280" Margin="85,10,29,22" >
+                        <wf:PictureBox x:Name="captureImageBox" />
+                    </WindowsFormsHost>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Wykrywanie koloru">
+                <Grid>
+                    <Button Content="OK" Click="Button_click1" Margin="49,16,1239,643"/>
 
+                    <Slider x:Name="slider1" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged"  Margin="474,32,264,621"/>
+                    <Slider x:Name="slider2" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="474,148,264,494"/>
+                    <Slider x:Name="slider3" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="474,263,264,369"/>
+                    <Slider x:Name="slider4" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="474,388,264,247"/>
+                    <Slider x:Name="slider5" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="474,510,264,140"/>
+                    <Slider x:Name="slider6" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="474,612,264,40"/>
+
+                    <TextBox x:Name="TB1" Margin="274,16,968,673" />
+                    <TextBox x:Name="TB2" Margin="274,128,968,567" />
+                    <TextBox x:Name="TB3" Margin="274,247,968,448" />
+                    <TextBox x:Name="TB4" Margin="274,376,968,314" />
+                    <TextBox x:Name="TB5" Margin="274,486,968,206" />
+                    <TextBox x:Name="TB6" Margin="274,594,968,94" />
+                </Grid>
+            </TabItem>
+
+        </TabControl>
     </Grid>
+
 </Window>
