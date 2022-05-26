@@ -49,3 +49,5 @@ C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debu
 C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\runtimes\win-x86\native\msvcp140_atomic_wait.dll
 C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\runtimes\win-x86\native\msvcp140_codecvt_ids.dll
 C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\runtimes\win-x86\native\vcruntime140.dll
+C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\kolor.png
+C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\kolor2.png

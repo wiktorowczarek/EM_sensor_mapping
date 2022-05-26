@@ -25,6 +25,7 @@ using System.Windows.Interop;
 using System.Timers;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using Emgu.CV.Util;
 
 namespace Sensor_app
 {
@@ -53,11 +54,35 @@ namespace Sensor_app
             }
             
         }
+        Mat frame = new Mat();
+        VectorOfVectorOfInt newPoints = new VectorOfVectorOfInt();
 
         private void ProcessFrame(object sender, EventArgs arg)
         {
-            Mat frame = new Mat();
+            
+            Mat frame2 = new Mat();
+            //Mat imgGray=new Mat();
+            //Mat imgCanny = new Mat();
+            //Mat imgBlur = new Mat();
+            //Mat kernel = new Mat();
+            //Mat imgDilated = new Mat();
+            //kernel = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new System.Drawing.Size(3,3),new System.Drawing.Point(1,1));
+
             _capture.Retrieve(frame, 0);
+            //CvInvoke.CvtColor(frame, imgGray, ColorConversion.Bgr2Gray);
+            //CvInvoke.GaussianBlur(frame, imgBlur, new System.Drawing.Size(3, 3), 3, 0);
+            //CvInvoke.Canny(imgBlur, imgCanny, 25, 75);
+            //CvInvoke.Dilate(imgCanny, imgDilated, kernel, new System.Drawing.Point(-1, 1), 6, BorderType.Constant, new MCvScalar(255, 255, 255));
+            //Bitmap imgeOrigenal = frame.ToBitmap();
+            //Image<Hsv, byte> imgHSV = new Image<Hsv, byte>(400, 500);
+            //Image<Hsv, byte> imageHSVDest = new Image<Hsv, byte>(400, 500);
+            //CvInvoke.CvtColor(frame, imgHSV, ColorConversion.Bgr2Hsv);
+            //// 7,48,222,188,125,255
+            //MCvScalar lower = new MCvScalar(7, 48, 222);
+            //MCvScalar upper = new MCvScalar(188, 125, 255);
+            //CvInvoke.InRange(imgHSV, new ScalarArray(lower),
+            //               new ScalarArray(upper), imageHSVDest);
+            frame2 = findColor(frame);
             Bitmap imgeOrigenal = frame.ToBitmap();
             captureImageBox.Image = imgeOrigenal;
 
@@ -108,5 +133,61 @@ namespace Sensor_app
 
             Detection.Detect_color();
         }
+
+        private System.Drawing.Point getContour(Mat imgDil)
+        {
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            Mat hierarchy = new Mat();
+            
+            CvInvoke.FindContours(imgDil, contours, hierarchy, RetrType.External, ChainApproxMethod.ChainApproxSimple);
+
+            System.Drawing.Point myPoint = new(0, 0);
+
+            for(int i =0; i<contours.Size; i++)
+            {
+                int area =(int)CvInvoke.ContourArea(contours[i]);
+                VectorOfVectorOfPoint conPoly = new VectorOfVectorOfPoint(contours.Size);
+                VectorOfRect boundRect = new VectorOfRect(contours.Size);
+
+                if (area>100)
+                {
+                    double peri = CvInvoke.ArcLength(contours[i], true);
+                    CvInvoke.ApproxPolyDP(contours[i], conPoly[i], 0.02 * peri, true);
+                    boundRect.Push(new System.Drawing.Rectangle[] { CvInvoke.BoundingRectangle(conPoly[i]) });
+
+                    myPoint.X = boundRect[i].X + boundRect[i].Width / 2;
+                    myPoint.X = boundRect[i].Y + boundRect[i].Height / 2;
+                    CvInvoke.DrawContours(frame, conPoly, i, new MCvScalar(255, 0, 255), 2);
+                    //CvInvoke.Rectangle(frame, boundRect[i], new MCvScalar(0, 255, 255), 5);
+                }
+
+
+            }
+            return myPoint;
+        }
+
+        private Mat findColor(Mat img)
+        {
+            Mat imgHSV = new Mat();
+            Mat imgHSVDest = new Mat();
+            CvInvoke.CvtColor(img, imgHSV, ColorConversion.Bgr2Hsv);
+            // 7,48,222,188,125,255
+            MCvScalar lower = new MCvScalar(7, 48, 222);
+            MCvScalar upper = new MCvScalar(188, 125, 255);
+            CvInvoke.InRange(imgHSV, new ScalarArray(lower),
+                           new ScalarArray(upper), imgHSVDest);
+            System.Drawing.Point myPoint = getContour(imgHSVDest);
+
+            VectorOfInt a = new VectorOfInt(3);
+            //a ={ myPoint.X, myPoint.Y, 0,0 };
+
+            //newPoints.Push({ myPoint.X, myPoint.Y, 0});
+
+
+            return imgHSVDest;
+        }
+
+
+
     }
 }
