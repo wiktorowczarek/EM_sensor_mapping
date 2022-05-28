@@ -17,7 +17,7 @@ namespace Sensor_app
         public static void Detect_color()
         {
             string path = Environment.CurrentDirectory;
-            string file = Path.Combine(path, "kolor2.png");
+            string file = Path.Combine(path, "kolor4.png");
             Mat img = CvInvoke.Imread(file);
             Image<Hsv, byte> imgHSV = new Image<Hsv, byte>(400, 500);
             Image<Hsv, byte> imageHSVDest = new Image<Hsv, byte>(400, 500);
@@ -36,8 +36,8 @@ namespace Sensor_app
         }
 
 
-        // 7,48,222,188,125,255
-
+        // 7,48,222,188,125,255 rozowy
+        //86,148,85,207,241,253 czerw
 
 
 

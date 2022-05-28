@@ -45,7 +45,7 @@ namespace Sensor_app
             CvInvoke.UseOpenCL = false;
             try
             {
-                _capture = new VideoCapture("https://192.168.0.6:8080/video");//
+                _capture = new VideoCapture("https://192.168.0.12:8080/video");//
                 _capture.ImageGrabbed += ProcessFrame;
             }
             catch (NullReferenceException excpt)
@@ -56,6 +56,8 @@ namespace Sensor_app
         }
         Mat frame = new Mat();
         VectorOfVectorOfInt newPoints = new VectorOfVectorOfInt();
+        int k = 0;
+        List<System.Drawing.Point> PointList = new List<System.Drawing.Point>();
 
         private void ProcessFrame(object sender, EventArgs arg)
         {
@@ -83,6 +85,7 @@ namespace Sensor_app
             //CvInvoke.InRange(imgHSV, new ScalarArray(lower),
             //               new ScalarArray(upper), imageHSVDest);
             frame2 = findColor(frame);
+            
             Bitmap imgeOrigenal = frame.ToBitmap();
             captureImageBox.Image = imgeOrigenal;
 
@@ -149,14 +152,14 @@ namespace Sensor_app
                 VectorOfVectorOfPoint conPoly = new VectorOfVectorOfPoint(contours.Size);
                 VectorOfRect boundRect = new VectorOfRect(contours.Size);
 
-                if (area>100)
+                if (area > 100)
                 {
                     double peri = CvInvoke.ArcLength(contours[i], true);
                     CvInvoke.ApproxPolyDP(contours[i], conPoly[i], 0.02 * peri, true);
                     boundRect.Push(new System.Drawing.Rectangle[] { CvInvoke.BoundingRectangle(conPoly[i]) });
 
-                    myPoint.X = boundRect[i].X + boundRect[i].Width / 2;
-                    myPoint.X = boundRect[i].Y + boundRect[i].Height / 2;
+                    myPoint.X = boundRect[contours.Size].X + boundRect[contours.Size].Width / 2;
+                    myPoint.Y = boundRect[contours.Size].Y + boundRect[contours.Size].Height / 2;
                     CvInvoke.DrawContours(frame, conPoly, i, new MCvScalar(255, 0, 255), 2);
                     //CvInvoke.Rectangle(frame, boundRect[i], new MCvScalar(0, 255, 255), 5);
                 }
@@ -172,20 +175,46 @@ namespace Sensor_app
             Mat imgHSVDest = new Mat();
             CvInvoke.CvtColor(img, imgHSV, ColorConversion.Bgr2Hsv);
             // 7,48,222,188,125,255
-            MCvScalar lower = new MCvScalar(7, 48, 222);
-            MCvScalar upper = new MCvScalar(188, 125, 255);
+            //86,148,85,207,241,253
+            MCvScalar lower = new MCvScalar(86, 148, 85);
+            MCvScalar upper = new MCvScalar(207, 241, 253);
             CvInvoke.InRange(imgHSV, new ScalarArray(lower),
                            new ScalarArray(upper), imgHSVDest);
             System.Drawing.Point myPoint = getContour(imgHSVDest);
 
-            VectorOfInt a = new VectorOfInt(3);
-            //a ={ myPoint.X, myPoint.Y, 0,0 };
+            //VectorOfInt a = new VectorOfInt();
+            //int[] b = ;
+            //a.Push(b);
+            
+            
+            if (myPoint.X != 0 && myPoint.Y != 0)
+            {
 
-            //newPoints.Push({ myPoint.X, myPoint.Y, 0});
+                PointList.Add(myPoint);
+                
+                
+                //newPoints.Push({ myPoint.X, myPoint.Y, 0});
+                
 
+            }
+            for (int i = 0; i < PointList.Count; i++)
+            {
+
+                DrawOnCanvas(PointList[i]);
+            }
 
             return imgHSVDest;
         }
+
+        private void DrawOnCanvas(System.Drawing.Point Points)
+        {
+            
+                CvInvoke.Circle(frame, Points, 2, new MCvScalar(255, 0, 255),10, LineType.Filled);
+            
+
+        }
+
+
 
 
 
