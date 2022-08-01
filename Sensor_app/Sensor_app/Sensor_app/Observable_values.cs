@@ -18,7 +18,7 @@ using System.Windows.Media.Imaging;
 
 namespace Sensor_app
 {
-    public class Observable_values : INotifyPropertyChanged
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
 
         private double _hmin;
@@ -37,6 +37,13 @@ namespace Sensor_app
         {
             get { return capturedImage; }
             set { capturedImage = value; OnPropertyChanged("CapturedImage"); }
+        }
+
+        private string _SensorData;
+        public string SensorData
+        {
+            get { return _SensorData; }
+            set { _SensorData = value; OnPropertyChanged("SensorData"); }
         }
 
         //private VideoCapture capture;

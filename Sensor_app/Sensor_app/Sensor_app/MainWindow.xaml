@@ -5,43 +5,73 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sensor_app"
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Sensor Mapping" Height="800" Width="1400" ResizeMode="NoResize">
+        Title="Sensor Mapping" Height="900" Width="1500" ResizeMode="CanResize">
     <Grid>
-        <TabControl>
-            <TabItem Header="Kamera">
+        <TabControl Grid.RowSpan="2">
+            <TabItem Header="Camera">
                 <Grid>
-                    
-                    <Button Content="START" Click="captureButton_Click" Margin="10,10,1333,701"/>
-                    <Button Content="Reconnect" Click="captureButton_Click" Margin="10,56,1333,655"/>
-                    <WindowsFormsHost Height="720" Width="1280" Margin="85,10,29,22" >
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="11*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="START" Click="captureButton_Click" Grid.ColumnSpan="1" Height="70" Width="80" Margin="20,26,24,188"/>
+                    <Button Content="Reconnect" Click="Reconnect_Button_Click"  Grid.ColumnSpan="1" Height="70" Width="80" Grid.RowSpan="1" Margin="20,142,24,72"/>
+                    <Button Content="Delete track" Click="DeleteContour_Button_Click" Width="80"  Grid.ColumnSpan="1" Margin="20,297,24,33" Grid.Row="1" Grid.RowSpan="1"/>
+                    <Button Content="Save frame" Click="SaveFrame_Button_Click"  Grid.ColumnSpan="1" Margin="22,335,22,10" Width="80"/>
+                    <Button Content="Save Image" Click="SaveImage_Button_Click" Width="80"  Grid.ColumnSpan="1" Margin="22,105,22,237" Grid.RowSpan="1" Grid.Row="1"/>
+
+                    <ToggleButton Checked="Symulation_button_checked" Unchecked="Symulation_button_unchecked" Content="Symulation" Width="80"  Grid.ColumnSpan="1" Margin="22,10,22,327" Grid.RowSpan="1" Grid.Row="1"/>
+                    <ToggleButton Checked="DetectionCheck_button_checked" Unchecked="DetectionCheck_button_unchecked" Content="Capture check" Width="80"  Grid.ColumnSpan="1" Margin="22,200,22,138" Grid.RowSpan="1" Grid.Row="1"/>
+
+                    <WindowsFormsHost Grid.Column="1" Margin="46,66,45,72" Grid.RowSpan="2" >
                         <wf:PictureBox x:Name="captureImageBox" />
                     </WindowsFormsHost>
+
+                    <Rectangle Margin="124,0,10,10" Stroke="SkyBlue" StrokeThickness="20" Grid.RowSpan="2" Grid.ColumnSpan="2"  />
+                    <Label Content="WEBCAM" FontSize="40" Grid.Column="1" Height="90" Width="300" Margin="26,0,1044,336"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Wykrywanie koloru">
+            <TabItem Header="Color Adjustment">
                 <Grid>
-                    <Button Content="OK" Click="Button_click1" Margin="49,16,1239,643"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="21*"/>
+                        <ColumnDefinition Width="406*"/>
+                        <ColumnDefinition Width="213*"/>
+                        <ColumnDefinition Width="854*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Select Image from file" Click="Button_click1" Grid.Column="1" Margin="92,46,105,588"/>
+                    <Button Content="test" Click="Button_click3" Grid.Column="1" Margin="92,302,105,452"/>
 
-                    <Slider x:Name="slider1" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
-                ValueChanged="slider_ValueChanged"  Margin="474,32,264,621"/>
-                    <Slider x:Name="slider2" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
-                ValueChanged="slider_ValueChanged" Margin="474,148,264,494"/>
-                    <Slider x:Name="slider3" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
-                ValueChanged="slider_ValueChanged" Margin="474,263,264,369"/>
-                    <Slider x:Name="slider4" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
-                ValueChanged="slider_ValueChanged" Margin="474,388,264,247"/>
-                    <Slider x:Name="slider5" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
-                ValueChanged="slider_ValueChanged" Margin="474,510,264,140"/>
-                    <Slider x:Name="slider6" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
-                ValueChanged="slider_ValueChanged" Margin="474,612,264,40"/>
+                    <TextBox IsReadOnly="True" Text="{Binding SensorData}" Margin="30" Grid.Column="1" Height="60" FontSize="25" />
 
-                    <TextBox x:Name="TB1" Margin="274,16,968,673" />
-                    <TextBox x:Name="TB2" Margin="274,128,968,567" />
-                    <TextBox x:Name="TB3" Margin="274,247,968,448" />
-                    <TextBox x:Name="TB4" Margin="274,376,968,314" />
-                    <TextBox x:Name="TB5" Margin="274,486,968,206" />
-                    <TextBox x:Name="TB6" Margin="274,594,968,94" />
+                        <StackPanel Grid.Column="2" Grid.ColumnSpan="2" Margin="213,0,0,0">
+                        <Slider x:Name="slider1" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged"  Margin="50,50,50,0" Grid.Column="2"/>
+                        <Slider x:Name="slider2" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="50,90,50,0" Grid.Column="2"/>
+                        <Slider x:Name="slider3" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="50,100,50,0" Grid.Column="2"/>
+                        <Slider x:Name="slider4" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="50,100,50,0" Grid.Column="2"/>
+                        <Slider x:Name="slider5" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="50,100,50,0" Grid.Column="2"/>
+                        <Slider x:Name="slider6" Minimum="0"  Maximum="255" TickFrequency="2" TickPlacement="BottomRight"
+                ValueChanged="slider_ValueChanged" Margin="50,100,50,0" Grid.Column="2"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBox x:Name="TB1" IsReadOnly="True" Margin="30" Grid.Column="1" Height="60" FontSize="25" />
+                        <TextBox x:Name="TB2" IsReadOnly="True" Margin="30" Grid.Column="1" Height="60" FontSize="25" />
+                        <TextBox x:Name="TB3" IsReadOnly="True" Margin="30" Grid.Column="1" Height="60" FontSize="25" />
+                        <TextBox x:Name="TB4" IsReadOnly="True" Margin="30" Grid.Column="1" Height="60" FontSize="25" />
+                        <TextBox x:Name="TB5" IsReadOnly="True" Margin="30" Grid.Column="1" Height="60" FontSize="25" />
+                        <TextBox x:Name="TB6" IsReadOnly="True" Margin="30" Grid.Column="1" Height="60" FontSize="25"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
 

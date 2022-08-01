@@ -53,3 +53,8 @@ C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debu
 C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\kolor2.png
 C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\kolor3.png
 C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\kolor4.png
+C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\ControlzEx.dll
+C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\MahApps.Metro.dll
+C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\Microsoft.Xaml.Behaviors.dll
+C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\bin\Debug\net5.0-windows\de\MahApps.Metro.resources.dll
+C:\Users\Dorota\Desktop\magisterka\app\Sensor_app\Sensor_app\Sensor_app\obj\Debug\net5.0-windows\App.baml

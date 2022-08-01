@@ -56,6 +56,10 @@
               "target": "Package",
               "version": "[4.5.5.4823, )"
             },
+            "MahApps.Metro": {
+              "target": "Package",
+              "version": "[2.4.9, )"
+            },
             "System.Drawing.Common": {
               "target": "Package",
               "version": "[6.0.0, )"
