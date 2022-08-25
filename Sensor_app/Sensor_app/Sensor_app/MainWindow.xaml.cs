@@ -32,6 +32,7 @@ using System.CodeDom.Compiler;
 using System.CodeDom;
 using System.Threading;
 
+
 namespace Sensor_app
 {
     
@@ -39,22 +40,53 @@ namespace Sensor_app
     {
         
         private bool _captureInProgress;
+        private bool _captureInProgress2;
         private VideoCapture _capture = null;
-        
+        private VideoCapture _capture2 = null;
         public MainWindow()
         {
             InitializeComponent();
             
             Connect_to_webcam();
             DataContext = this;
+            //Background1_visibility = Visibility.Visible;
+            //Background2_visibility = Visibility.Hidden;
+          
+
+            TB1.Text = "0";
+            TB2.Text = "0";
+            TB3.Text = "0";
+            TB4.Text = "255";
+            TB5.Text = "255";
+            TB6.Text = "255";
+            Enable_while_capture = true;
+            Start_capture_color_bg = System.Windows.Media.Brushes.White;
         }
 
         private void Connect_to_webcam()        {
-            CvInvoke.UseOpenCL = false;           
+            CvInvoke.UseOpenCL = false;
+            if(_capture!=null) _capture.Dispose();
             try
             {
-                _capture = new VideoCapture("https://192.168.0.4:8080/video");//
-                _capture.ImageGrabbed += ProcessFrame;
+                
+                switch (Selected_camera_type)
+                {
+                    case 0:
+                        _capture = new VideoCapture(0);
+                        _capture.ImageGrabbed += ProcessFrame;
+                        break;
+                    case 1:
+                        _capture = new VideoCapture(1);
+                        _capture.ImageGrabbed += ProcessFrame;
+                        break;
+                    case 2:
+                        _capture = new VideoCapture("https://"+ IP_textbox+"/video");
+                        _capture.ImageGrabbed += ProcessFrame;
+                        break;
+                }
+                //_capture = new VideoCapture("https://192.168.0.4:8080/video");//
+                //_capture = new VideoCapture(0);//
+                //_capture.ImageGrabbed += ProcessFrame;
             }
             catch (NullReferenceException excpt)
             {
@@ -64,6 +96,7 @@ namespace Sensor_app
 
 
         public Mat frame = new Mat();
+        
         VectorOfVectorOfInt newPoints = new VectorOfVectorOfInt();
         int k = 0;
         List<System.Drawing.Point> PointList = new List<System.Drawing.Point>();
@@ -72,16 +105,15 @@ namespace Sensor_app
         bool CaptureCheck = false;
         private void ProcessFrame(object sender, EventArgs arg)
         {
+          
+              _capture.Retrieve(frame, 0);
+
+                findColor(frame, hmin, smin, vmin, hmax, smax, vmax);
+
+                Bitmap imgeOrigenal = frame.ToBitmap();
+                captureImageBox.Image = imgeOrigenal;
             
-            Mat frame2 = new Mat();
-            
-            _capture.Retrieve(frame, 0);
-            
-            findColor(frame, hmin, smin, vmin, hmax, smax, vmax);
-            
-            Bitmap imgeOrigenal = frame.ToBitmap();
-            captureImageBox.Image = imgeOrigenal;
-            
+        
         }
 
 
@@ -91,22 +123,25 @@ namespace Sensor_app
             {
                 if (_captureInProgress)
                 {  //stop the capture
-
+                    Start_capture_color_bg = System.Windows.Media.Brushes.White;
+                    Enable_while_capture = true;
                     _capture.Pause();
                 }
                 else
                 {
                     //start the capture
-
+                    Start_capture_color_bg = System.Windows.Media.Brushes.LightGreen;
+                    Enable_while_capture = false;
                     _capture.Start();
                 }
 
                 _captureInProgress = !_captureInProgress;
             }
+    
         }
 
-        public static int hmin = 0, smin = 0, vmin = 0;
-        public static int hmax = 0, smax = 0, vmax = 0;
+        public static int hmin = 84, smin = 213, vmin = 71;
+        public static int hmax = 251, smax = 255, vmax = 250;
         private void Button_click1(object sender, RoutedEventArgs e)
         {
             
@@ -134,22 +169,27 @@ namespace Sensor_app
             Connect_to_webcam();
         }
 
+        public int Initialize_slider = 0;
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            hmin = (int)slider1.Value;
-            TB1.Text = ((int)slider1.Value).ToString();
-            smin = (int)slider2.Value;
-            TB2.Text = ((int)slider2.Value).ToString();
-            vmin = (int)slider3.Value;
-            TB3.Text = ((int)slider3.Value).ToString();
-            hmax = (int)slider4.Value;
-            TB4.Text = ((int)slider4.Value).ToString();
-            smax = (int)slider5.Value;
-            TB5.Text = ((int)slider5.Value).ToString();
-            vmax = (int)slider6.Value;
-            TB6.Text = ((int)slider6.Value).ToString();
+            if (Initialize_slider > 2)
+            {
+                hmin = (int)slider1.Value;
+                TB1.Text = ((int)slider1.Value).ToString();
+                smin = (int)slider2.Value;
+                TB2.Text = ((int)slider2.Value).ToString();
+                vmin = (int)slider3.Value;
+                TB3.Text = ((int)slider3.Value).ToString();
+                hmax = (int)slider4.Value;
+                TB4.Text = ((int)slider4.Value).ToString();
+                smax = (int)slider5.Value;
+                TB5.Text = ((int)slider5.Value).ToString();
+                vmax = (int)slider6.Value;
+                TB6.Text = ((int)slider6.Value).ToString();
 
-            Detection.Detect_color(Imagepath);
+                Detection.Detect_color(Imagepath);
+            }
+            Initialize_slider++;
         }
 
         private void SaveFrame_Button_Click(object sender, RoutedEventArgs e)
@@ -234,9 +274,9 @@ namespace Sensor_app
             
             try
             {
-                socket.Connect("192.168.0.13", PORT);
-                if(socket.Connected) SensorData = "3";
-                else SensorData = "0";
+                socket.Connect("192.168.0.29", PORT);
+                //if(socket.Connected) SensorData = "3";
+                //else SensorData = "0";
                 string requestText = "GET /H";
                 byte[] requestBytes = Encoding.UTF8.GetBytes(requestText);
                 byte[] buffer = new byte[100];
@@ -262,40 +302,74 @@ namespace Sensor_app
             //}
 
         }
- 
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(Tabindex==0)
+            {
+                Background1_visibility = Visibility.Visible;
+                Background2_visibility = Visibility.Hidden;
+            }
+            else if (Tabindex == 1)
+            {
+                Background1_visibility = Visibility.Hidden;
+                Background2_visibility = Visibility.Visible;
+            }
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (Selected_camera_type)
+            {
+                case 0:
+                    IPbox_visi = Visibility.Hidden;
+                    break;
+                case 1:
+                    IPbox_visi = Visibility.Hidden;
+                    break;
+                case 2:
+                    IPbox_visi = Visibility.Visible;
+                    break;
+
+            }
+        }
+
         private void findColor(Mat img, int hmin, int smin, int vmin, int hmax, int smax, int vmax)
         {
-            Mat imgHSV = new Mat();
-            Mat imgHSVDest = new Mat();
-            CvInvoke.CvtColor(img, imgHSV, ColorConversion.Bgr2Hsv);
-            // 7,48,222,188,125,255
-            //86,148,85,207,241,253
-            //31,66,130,237,238,253
-            MCvScalar lower = new MCvScalar(hmin, smin, vmin);
-            MCvScalar upper = new MCvScalar(hmax, smax, vmax);
-            CvInvoke.InRange(imgHSV, new ScalarArray(lower),
-                           new ScalarArray(upper), imgHSVDest);
-
-            if (symulation == true ||CaptureCheck==true)
+            try
             {
-                System.Drawing.Point myPoint = getContour(imgHSVDest);
-
-
-
-
-                if (myPoint.X != 0 && myPoint.Y != 0 && CaptureCheck==false)
+                Mat imgHSV = new Mat();
+                Mat imgHSVDest = new Mat();
+                CvInvoke.CvtColor(img, imgHSV, ColorConversion.Bgr2Hsv);
+                // 7,48,222,188,125,255
+                //86,148,85,207,241,253
+                //31,66,130,237,238,253
+                MCvScalar lower = new MCvScalar(hmin, smin, vmin);
+                MCvScalar upper = new MCvScalar(hmax, smax, vmax);
+                CvInvoke.InRange(imgHSV, new ScalarArray(lower),
+                               new ScalarArray(upper), imgHSVDest);
+                if (SensorData == null) SensorData = "200";
+                if ((symulation == true || CaptureCheck == true) && (int.Parse(SensorData) > 150))
                 {
-                    PointList.Add(myPoint);
+                    System.Drawing.Point myPoint = getContour(imgHSVDest);
+
+
+
+
+                    if (myPoint.X != 0 && myPoint.Y != 0 && CaptureCheck == false)
+                    {
+                        PointList.Add(myPoint);
+                    }
                 }
+
+
+                for (int i = 0; i < PointList.Count; i++)
+                {
+                    DrawOnCanvas(PointList[i]);
+                }
+
             }
-
-
-            for (int i = 0; i < PointList.Count; i++)
-            {
-                DrawOnCanvas(PointList[i]);
-            }
-
-            
+            catch { }
         }
 
         private void DrawOnCanvas(System.Drawing.Point Points)
